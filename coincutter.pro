@@ -17,7 +17,6 @@ SOURCES += main.cpp\
     circlerecognizer.cpp
 
 HEADERS  += mainwindow.h \
-    PixelFormat.h \
     circlerecognizer.h \
     Circle.h
 

@@ -9,6 +9,9 @@ class CircleRecognizer
 {
 public:
 	static Circles FindCircles(const QImage& image);
+
+//private:
+    static QImage Binarize(const QImage& image);
 };
 
 #endif // CIRCLERECOGNIZER_H
