@@ -14,7 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QPixmap image("./1.jpg");
     image = image.scaled(ui->label->width(), ui->label->height(), Qt::KeepAspectRatio);
 
-    ui->label->setPixmap(QPixmap::fromImage(CircleRecognizer::Binarize(image.toImage())));
+    CircleRecognizer recognizer;
+    ui->label->setPixmap(QPixmap::fromImage(recognizer.Binarize(image.toImage())));
 
 
 }

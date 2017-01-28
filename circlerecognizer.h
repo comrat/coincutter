@@ -4,14 +4,21 @@
 #include <QImage>
 #include "Circle.h"
 
+#include <vector>
+
+const int HistSize = 256;
+
 
 class CircleRecognizer
 {
+private:
+	typedef std::vector<int>	HistVector;
+
 public:
-	static Circles FindCircles(const QImage& image);
+	Circles FindCircles(const QImage& image);
 
 //private:
-    static QImage Binarize(const QImage& image);
+    QImage Binarize(const QImage& image);
 };
 
 #endif // CIRCLERECOGNIZER_H
