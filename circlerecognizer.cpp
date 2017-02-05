@@ -1,8 +1,9 @@
 #include "circlerecognizer.h"
 #include <QColor>
-
 #include <iostream>
 #include <numeric>
+#include "convolution.h"
+
 
 Circles CircleRecognizer::FindCircles(const QImage& image)
 {
@@ -14,15 +15,27 @@ Circles CircleRecognizer::FindCircles(const QImage& image)
 
 QImage CircleRecognizer::CannyFilter(const QImage& image)
 {
-	//TODO: implement
-	return image;
+	Convolution::Array kernel(3, Convolution::ArrayRow(3));
+	kernel[0][0] = -2;
+	kernel[0][1] = -1;
+	kernel[0][2] = 0;
+
+	kernel[1][0] = -1;
+	kernel[1][1] = 1;
+	kernel[1][2] = 1;
+
+	kernel[2][0] = 0;
+	kernel[2][1] = 1;
+	kernel[2][2] = 2;
+	Convolution conv(kernel, 9 );
+	QImage img = conv.Calc(image);
+	return img;
 }
 
 
 QImage CircleRecognizer::Grayscale(const QImage& image)
 {
 	QImage img = image;
-	unsigned long sum = img.height() * img.width();
 
 	for (int i = 0; i < img.height(); ++i) {
 		uchar* scan = img.scanLine(i);
@@ -89,7 +102,7 @@ QImage CircleRecognizer::Binarize(const QImage& image)
 		}
 	}
 
-	std::cout << "Otsu threshold: " << maxIdx << std::endl;
+	//std::cout << "Otsu threshold: " << maxIdx << std::endl;
 
 	for (int i = 0; i < img.height(); ++i) {
 		uchar* scan = img.scanLine(i);

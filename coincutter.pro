@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    circlerecognizer.cpp
+    circlerecognizer.cpp \
+    convolution.cpp
 
 HEADERS  += mainwindow.h \
     circlerecognizer.h \
-    Circle.h
+    Circle.h \
+    convolution.h
 
 FORMS    += mainwindow.ui

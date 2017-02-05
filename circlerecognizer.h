@@ -2,9 +2,9 @@
 #define CIRCLERECOGNIZER_H
 
 #include <QImage>
+#include <vector>
 #include "Circle.h"
 
-#include <vector>
 
 const int HistSize = 256;
 
