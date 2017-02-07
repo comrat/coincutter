@@ -27,7 +27,7 @@ QImage CircleRecognizer::CannyFilter(const QImage& image)
 	kernel[2][0] = 0;
 	kernel[2][1] = 1;
 	kernel[2][2] = 2;
-	Convolution conv(kernel, 9 );
+	Convolution conv(kernel);
 	QImage img = conv.Calc(image);
 	return img;
 }

@@ -18,13 +18,13 @@ QImage Convolution::Calc(const QImage& image)
 			int green = 0;
 			int blue = 0;
 
-			for (int k = -_shift; k < _shift; ++k) {
-				for (int l = -_shift; l < _shift; ++l) {
+			for (int k = -_shift; k <= _shift; ++k) {
+				for (int l = -_shift; l <= _shift; ++l) {
 					int x = j + k;
-					if (x < 0)
+					if (x < 0 || x >= image.width())
 						continue;
 					int y = i + l;
-					if (y < 0)
+					if (y < 0 || y >= image.height())
 						continue;
 					int val = _kernel[k + _shift][l + _shift];
 					QRgb pix = image.pixel(x, y);
@@ -33,7 +33,15 @@ QImage Convolution::Calc(const QImage& image)
 					blue += val * qBlue(pix);
 				}
 			}
-			img.setPixel(j, i, QColor(red / _divisor, green / _divisor, blue / _divisor).rgba());
+			red /= _divisor;
+			red = red < 0 ? 0 : (red >= 256 ? 255 : red);
+
+			green /= _divisor;
+			green = green < 0 ? 0 : (green >= 256 ? 255 : green);
+
+			blue /= _divisor;
+			blue = blue < 0 ? 0 : (blue >= 256 ? 255 : blue);
+			img.setPixel(j, i, QColor(red, green, blue).rgba());
 		}
 	}
 
