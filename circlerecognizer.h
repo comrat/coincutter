@@ -20,8 +20,6 @@ public:
 //private:
     QImage Binarize(const QImage& image);
 	QImage Grayscale(const QImage& image);
-
-	QImage CannyFilter(const QImage& image);
 };
 
 #endif // CIRCLERECOGNIZER_H

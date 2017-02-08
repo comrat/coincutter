@@ -2,8 +2,6 @@
 #include <stdexcept>
 #include <QColor>
 
-#include <iostream>
-
 
 QImage Convolution::Calc(const QImage& image)
 {
