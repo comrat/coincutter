@@ -3,13 +3,46 @@
 #include <QColor>
 
 
-QImage Convolution::Calc(const QImage& image)
+QImage Convolution::CalcGray(const QImage& image)
 {
 	if (!_divisor)
 		throw std::overflow_error("Divide by zero exception");
 
     QImage img(image.width(), image.height(), QImage::Format_RGB32);
 
+	for (int i = 0; i < image.height(); ++i) {
+		for (int j = 0; j < image.width(); ++j) {
+			int gray = 0;
+
+			for (int k = -_shift; k <= _shift; ++k) {
+				for (int l = -_shift; l <= _shift; ++l) {
+					int x = j + k;
+					if (x < 0 || x >= image.width())
+						continue;
+					int y = i + l;
+					if (y < 0 || y >= image.height())
+						continue;
+					int val = _kernel[k + _shift][l + _shift];
+					gray += val * qGray(image.pixel(x, y));
+				}
+			}
+
+			gray /= _divisor;
+			gray = gray < 0 ? 0 : (gray >= 256 ? 255 : gray);
+			img.setPixel(j, i, QColor(gray, gray, gray).rgba());
+		}
+	}
+
+    return img;
+}
+
+
+QImage Convolution::Calc(const QImage& image)
+{
+	if (!_divisor)
+		throw std::overflow_error("Divide by zero exception");
+
+    QImage img(image.width(), image.height(), QImage::Format_RGB32);
 	for (int i = 0; i < image.height(); ++i) {
 		for (int j = 0; j < image.width(); ++j) {
 			int red = 0;

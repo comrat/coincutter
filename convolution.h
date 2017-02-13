@@ -28,6 +28,7 @@ public:
     Convolution(const Array& arr, int divisor = 1) : _size(arr.size()), _shift(_size / 2), _divisor(divisor), _kernel(arr) { }
 
 	QImage Calc(const QImage& image);
+	QImage CalcGray(const QImage& image);
 };
 
 #endif // CONVOLUTION_H
