@@ -6,8 +6,9 @@
 
 struct Filters
 {
-	static QImage Canny(const QImage& image);
+	static QImage Sobel(const QImage& image);
 	static QImage Gauss(const QImage& image);
+	static QImage Canny(const QImage& image);
 };
 
 #endif // FILTERS_H

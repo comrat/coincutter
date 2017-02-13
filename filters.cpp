@@ -2,6 +2,26 @@
 #include "convolution.h"
 
 
+QImage Filters::Sobel(const QImage& image)
+{
+	Convolution::Array kernel(3, Convolution::ArrayRow(3));
+	kernel[0][0] = -1;
+	kernel[0][1] = -2;
+	kernel[0][2] = -1;
+
+	kernel[1][0] = 0;
+	kernel[1][1] = 0;
+	kernel[1][2] = 0;
+
+	kernel[2][0] = 1;
+	kernel[2][1] = 2;
+	kernel[2][2] = 1;
+	Convolution conv(kernel);
+	QImage img = conv.CalcGray(image);
+	return img;
+}
+
+
 QImage Filters::Canny(const QImage& image)
 {
 	Convolution::Array kernel(3, Convolution::ArrayRow(3));
