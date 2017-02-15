@@ -1,5 +1,7 @@
 #include "filters.h"
 #include "convolution.h"
+#include <cmath>
+#include <QColor>
 
 
 QImage Filters::Sobel(const QImage& image)
@@ -17,8 +19,36 @@ QImage Filters::Sobel(const QImage& image)
 	kernel[2][1] = 2;
 	kernel[2][2] = 1;
 	Convolution conv(kernel);
-	QImage img = conv.CalcGray(image);
-	return img;
+	QImage Gy = conv.CalcGray(image);
+
+	kernel[0][0] = -1;
+	kernel[0][1] = 0;
+	kernel[0][2] = 1;
+
+	kernel[1][0] = -2;
+	kernel[1][1] = 0;
+	kernel[1][2] = 2;
+
+	kernel[2][0] = -1;
+	kernel[2][1] = 0;
+	kernel[2][2] = 1;
+	//TODO: impl method for kernel setting
+	Convolution conv2(kernel);
+	QImage Gx = conv2.CalcGray(image);
+
+    QImage img(image.width(), image.height(), QImage::Format_RGB32);
+
+	for (int i = 0; i < image.height(); ++i) {
+		for (int j = 0; j < image.width(); ++j) {
+			double gx = qGray(Gx.pixel(j, i));
+			double gy = qGray(Gy.pixel(j, i));
+			int val = sqrt(gx * gx + gy * gy);
+			val = val < 0 ? 0 : (val >= 256 ? 255 : val);
+			img.setPixel(j, i, QColor(val, val, val).rgba());
+		}
+	}
+
+	return Gx;
 }
 
 
