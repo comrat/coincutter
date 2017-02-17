@@ -32,9 +32,9 @@ QImage Filters::Sobel(const QImage& image)
 	kernel[2][0] = -1;
 	kernel[2][1] = 0;
 	kernel[2][2] = 1;
-	//TODO: impl method for kernel setting
-	Convolution conv2(kernel);
-	QImage Gx = conv2.CalcGray(image);
+
+	conv.SetKernel(kernel);
+	QImage Gx = conv.CalcGray(image);
 
     QImage img(image.width(), image.height(), QImage::Format_RGB32);
 

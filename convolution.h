@@ -29,6 +29,10 @@ public:
 
 	QImage Calc(const QImage& image);
 	QImage CalcGray(const QImage& image);
+
+	void SetKernel(const Array& arr);
+	void SetDivisor(int divisor) { _divisor = divisor; }
+	int GetDivisor() const { return _divisor; }
 };
 
 #endif // CONVOLUTION_H
