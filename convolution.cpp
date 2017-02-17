@@ -78,12 +78,3 @@ QImage Convolution::Calc(const QImage& image)
 
     return img;
 }
-
-
-void Convolution::SetKernel(const Array& arr)
-{
-	_size = arr.size();
-	_kernel.resize(_size);
-	for (int i = 0; i < _size; ++i)
-		_kernel[i].resize(_size, 0);
-}

@@ -30,7 +30,7 @@ public:
 	QImage Calc(const QImage& image);
 	QImage CalcGray(const QImage& image);
 
-	void SetKernel(const Array& arr);
+	void SetKernel(const Array& arr) { _size = arr.size(); _shift = _size / 2; _kernel = arr; }
 	void SetDivisor(int divisor) { _divisor = divisor; }
 	int GetDivisor() const { return _divisor; }
 };
