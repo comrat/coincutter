@@ -53,7 +53,66 @@ QImage Filters::Sobel(const QImage& image)
 
 QImage CannyThreshold(const QImage& image, int low, int high)
 {
+	if (low > 255)
+		low = 255;
+	if (high > 255)
+		high = 255;
 
+	int w = image.width();
+	int h = image.height();
+	QImage edge(w, h, QImage::Format_RGB32);
+
+	for (int i = 0; i < h; ++i) {
+		for (int j = 0; j < w; ++j) {
+			edge.setPixel(i, j, image.pixel(i, j));
+			if (edge.pixel(i, j) > high) {
+				edge.setPixel(i, j, QColor(255, 255, 255).rgba());
+			} else if(edge.pixel(i, j) < low) {
+				edge.setPixel(i, j, QColor(0, 0, 0).rgba());
+			} else {
+				bool anyHigh = false;
+				bool anyBetween = false;
+				for (int x = i - 1; x < i + 2; ++x) {
+					for (int y = j - 1; y < j + 2; ++y) {
+						if (x <= 0 || y <= 0 || h || y > w) {
+							continue;
+						} else {
+							if (edge.pixel(x,y) > high) {
+								//TODO: add function for val setting
+								edge.setPixel(i, j, QColor(255, 255, 255).rgba());
+								anyHigh = true;
+								break;
+							} else if (edge.pixel(x, y) <= high && edge.pixel(x, y) >= low) {
+								anyBetween = true;
+							}
+						}
+					}
+					if (anyHigh)
+						break;
+				}
+				if (!anyHigh && anyBetween)
+					for (int x = i - 2; x < i + 3; ++x) {
+						for (int y = j - 1; y < j + 3; ++y) {
+							if (x < 0 || y < 0 || x > h || y > w) {
+								continue;
+							} else {
+								if (edge.pixel(x, y) > high) {
+									edge.setPixel(i, j, QColor(255, 255, 255).rgba());
+									anyHigh = true;
+									break;
+								}
+							}
+						}
+						if (anyHigh)
+							break;
+					}
+
+				if (!anyHigh)
+					edge.setPixel(i, j, QColor(0, 0, 0).rgba());
+			}
+		}
+	}
+	return edge;
 }
 
 
@@ -62,33 +121,33 @@ QImage Filters::CannyNonMax(const QImage& image, const Convolution::Array& angle
 	int w = image.width();
 	int h = image.height();
 
-    QImage nonMaxSupped(w - 2, h - 2, QImage::Format_RGB32);
+	QImage nonMaxSupped(w - 2, h - 2, QImage::Format_RGB32);
 	for (int i = 1; i < h - 1; ++i) {
 		for (int j = 1; j < w - 1; ++j) {
 			float angle = angles[i][j];
-			nonMaxSupped.setPixel(j - 1, i - 1, image.pixel(j, i));
+			nonMaxSupped.setPixel(i - 1, j - 1, image.pixel(i, j));
 
 			//Horizontal Edge
 			if (((-22.5 < angle) && (angle <= 22.5)) || ((157.5 < angle) && (angle <= -157.5)))
-				if ((image.pixel(j, i) < image.pixel(j + 1, i)) || (image.pixel(j, i) < image.pixel(j - 1, i)))
+				if ((image.pixel(i, j) < image.pixel(i, j + 1)) || (image.pixel(i, j) < image.pixel(i, j - 1)))
 					nonMaxSupped.setPixel(i - 1, j - 1,  QColor(0, 0, 0).rgba());
 
 			//Vertical Edge
 			if (((-112.5 < angle) && (angle <= -67.5)) || ((67.5 < angle) && (angle <= 112.5)))
-				if ((image.pixel(j, i) < image.pixel(j, i + 1)) || (image.pixel(j, i) < image.pixel(j, i - 1)))
+				if ((image.pixel(i, j) < image.pixel(i + 1, j)) || (image.pixel(i, j) < image.pixel(i - 1, j)))
 					nonMaxSupped.setPixel(i - 1, j - 1,  QColor(0, 0, 0).rgba());
 
 			//-45 Degree Edge
 			if (((-67.5 < angle) && (angle <= -22.5)) || ((112.5 < angle) && (angle <= 157.5)))
-				if ((image.pixel(j, i) < image.pixel(j + 1, i - 1)) || (image.pixel(j, i) < image.pixel(j - 1, i + 1)))
+				if ((image.pixel(i, j) < image.pixel(i - 1, j + 1)) || (image.pixel(i, j) < image.pixel(i + 1, j - 1)))
 					nonMaxSupped.setPixel(i - 1, j - 1,  QColor(0, 0, 0).rgba());
 
 			//45 Degree Edge
 			if (((-157.5 < angle) && (angle <= -112.5)) || ((22.5 < angle) && (angle <= 67.5)))
-				if ((image.pixel(j, i) < image.pixel(j + 1, i + 1)) || (image.pixel(j, i) < image.pixel(j - 1, i - 1)))
+				if ((image.pixel(i, j) < image.pixel(i + 1, j + 1)) || (image.pixel(i, j) < image.pixel(i - 1, j - 1)))
 					nonMaxSupped.setPixel(i - 1, j - 1,  QColor(0, 0, 0).rgba());
-        }
-    }
+		}
+	}
 	return nonMaxSupped;
 }
 
@@ -144,7 +203,7 @@ QImage Filters::Canny(const QImage& image)
 		}
 	}
 
-	//QImage nonMaxSupped = CannyNonMax(img, angles);
+	QImage nonMaxSupped = CannyNonMax(img, angles);
 
 	return image;
 }
