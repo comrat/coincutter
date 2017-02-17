@@ -206,7 +206,7 @@ QImage Filters::Canny(const QImage& image)
 		}
 	}
 
-	return CannyThreshold(CannyNonMax(img, angles), 20, 40);
+	return CannyThreshold(CannyNonMax(img, angles), 30, 60);
 }
 
 

@@ -18,7 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	//CircleRecognizer recognizer;
     //ui->label->setPixmap(QPixmap::fromImage(recognizer.Binarize(image.toImage())));
 	//ui->label->setPixmap(QPixmap::fromImage(recognizer.CannyFilter(image.toImage())));
+	//ui->label->setPixmap(QPixmap::fromImage(Filters::Canny(image.toImage())));
+
 	ui->label->setPixmap(QPixmap::fromImage(Filters::Canny(image.toImage())));
+	//ui->label->setPixmap(QPixmap::fromImage(Filters::Sobel(image.toImage())));
 }
 
 MainWindow::~MainWindow()
