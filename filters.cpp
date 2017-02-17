@@ -2,6 +2,8 @@
 #include <cmath>
 #include <QColor>
 
+#include <iostream>
+
 
 QImage Filters::Sobel(const QImage& image)
 {
@@ -65,9 +67,10 @@ QImage Filters::CannyThreshold(const QImage& image, int low, int high)
 	for (int i = 0; i < h; ++i) {
 		for (int j = 0; j < w; ++j) {
 			edge.setPixel(j, i, image.pixel(j, i));
-			if (edge.pixel(j, i) > high) {
+
+			if (qGray(edge.pixel(j, i)) > high) {
 				edge.setPixel(j, i, QColor(255, 255, 255).rgba());
-			} else if(edge.pixel(j, i) < low) {
+			} else if(qGray(edge.pixel(j, i)) < low) {
 				edge.setPixel(j, i, QColor(0, 0, 0).rgba());
 			} else {
 				bool anyHigh = false;
@@ -77,12 +80,12 @@ QImage Filters::CannyThreshold(const QImage& image, int low, int high)
 						if (x <= 0 || y <= 0 || h || y > w) {
 							continue;
 						} else {
-							if (edge.pixel(x, y) > high) {
+							if (qGray(edge.pixel(x, y)) > high) {
 								//TODO: add function for val setting
 								edge.setPixel(j, i, QColor(255, 255, 255).rgba());
 								anyHigh = true;
 								break;
-							} else if (edge.pixel(x, y) <= high && edge.pixel(x, y) >= low) {
+							} else if (qGray(edge.pixel(x, y)) <= high && qGray(edge.pixel(x, y)) >= low) {
 								anyBetween = true;
 							}
 						}
@@ -96,7 +99,7 @@ QImage Filters::CannyThreshold(const QImage& image, int low, int high)
 							if (x < 0 || y < 0 || x > h || y > w) {
 								continue;
 							} else {
-								if (edge.pixel(x, y) > high) {
+								if (qGray(edge.pixel(x, y)) > high) {
 									edge.setPixel(j, i, QColor(255, 255, 255).rgba());
 									anyHigh = true;
 									break;
