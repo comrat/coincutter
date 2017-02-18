@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "Circle.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +18,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+	void DrawCircle(QImage& image, const Circle& circle);
+	void PutPixel(QImage& image, int x, int y);
 };
 
 #endif // MAINWINDOW_H
