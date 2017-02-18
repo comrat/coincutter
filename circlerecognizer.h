@@ -6,20 +6,14 @@
 #include "Circle.h"
 
 
-const int HistSize = 256;
-
-
 class CircleRecognizer
 {
-private:
-	typedef std::vector<int>	HistVector;
-
 public:
 	Circles FindCircles(const QImage& image);
 
-//private:
-    QImage Binarize(const QImage& image);
-	QImage Grayscale(const QImage& image);
+private:
+	bool CheckCircle(const QImage& image, const Circle& circle);
+	bool CheckPixel(const QImage& image, int x, int y);
 };
 
 #endif // CIRCLERECOGNIZER_H

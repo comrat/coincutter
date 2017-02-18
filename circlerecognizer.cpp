@@ -1,100 +1,76 @@
 #include "circlerecognizer.h"
+#include "filters.h"
+
 #include <QColor>
+
 #include <iostream>
-#include <numeric>
-#include "convolution.h"
 
 
 Circles CircleRecognizer::FindCircles(const QImage& image)
 {
 	Circles res;
-	Binarize(image);
+	QImage filtered = Filters::Canny(image);
+	int w = filtered.width();
+	int h = filtered.height();
+	int minR = (int)((w > h ? w : h) * 0.1);
+	int maxR = (int)((w > h ? w : h) * 0.5);
+	for (int r = minR; r < maxR; ++r) {
+		int width = w - r - 1;
+		int height = h - r - 1;
+		std::cout << "R: " << r << "; min: " << minR << ", maxR: " << maxR << std::endl;
+		for (int x = r; x < width; ++x) {
+			for (int y = r; y < height; ++y) {
+				Circle c(x, y, r);
+				if (CircleRecognizer::CheckCircle(filtered, c))
+					res.push_back(c);
+					//std::cout << "FOUND CIRCLE: x: " << x << ", y: " << y << ", r: " << r << std::endl;
+			}
+		}
+	}
 	return res;
 }
 
 
-
-QImage CircleRecognizer::Grayscale(const QImage& image)
+bool CircleRecognizer::CheckPixel(const QImage& image, int x, int y)
 {
-	QImage img = image;
-
-	for (int i = 0; i < img.height(); ++i) {
-		uchar* scan = img.scanLine(i);
-		int depth = 4;
-		for (int j = 0; j < img.width(); ++j) {
-			QRgb* rgbpixel = reinterpret_cast<QRgb*>(scan + j * depth);
-			int gray = qGray(*rgbpixel);
-			*rgbpixel = QColor(gray, gray, gray).rgba();
-		}
-	}
-
-    return img;
+	if (x < 0 || y < 0 || x >= image.width() || y >= image.height())
+		return false;
+	else
+		return qGray(image.pixel(x, y)) == 255;
 }
 
 
-QImage CircleRecognizer::Binarize(const QImage& image)
+bool CircleRecognizer::CheckCircle(const QImage& image, const Circle& circle)
 {
-	QImage img = image;
-	unsigned long sum = img.height() * img.width();
-	HistVector hist(256, 0);
+	int x0 = circle.x;
+	int y0 = circle.y;
+	int x = circle.radius;
+	int y = 0;
+	int err = 0;
+	int total = 0;
+	int match = 0;
 
-	for (int i = 0; i < img.height(); ++i) {
-		uchar* scan = img.scanLine(i);
-		int depth = 4;
-		for (int j = 0; j < img.width(); ++j) {
-			QRgb* rgbpixel = reinterpret_cast<QRgb*>(scan + j * depth);
-			int gray = qGray(*rgbpixel);
-			if (gray >= 0 && gray < 256)
-				++hist.at(gray);
+	while (x >= y) {
+		match += CircleRecognizer::CheckPixel(image, x0 + x, y0 + y) ? 1 : 0;
+		match += CircleRecognizer::CheckPixel(image, x0 + y, y0 + x) ? 1 : 0;
+		match += CircleRecognizer::CheckPixel(image, x0 - y, y0 + x) ? 1 : 0;
+		match += CircleRecognizer::CheckPixel(image, x0 - x, y0 + y) ? 1 : 0;
+		match += CircleRecognizer::CheckPixel(image, x0 - x, y0 - y) ? 1 : 0;
+		match += CircleRecognizer::CheckPixel(image, x0 - y, y0 - x) ? 1 : 0;
+		match += CircleRecognizer::CheckPixel(image, x0 + y, y0 - x) ? 1 : 0;
+		match += CircleRecognizer::CheckPixel(image, x0 + x, y0 - y) ? 1 : 0;
+		total += 8;
+
+		if (err <= 0) {
+			y += 1;
+			err += 2 * y + 1;
+		}
+		if (err > 0) {
+			x -= 1;
+			err -= 2 * x + 1;
 		}
 	}
 
-	double mu = 0;
-	for (int t = 0; t < HistSize; ++t)
-		mu += hist[t] * t;
-	mu /= sum;
-
-	double maxDisp = 0.0;
-	int maxIdx = 0;
-
-	for (HistVector::iterator t = hist.begin(); t != hist.end(); ++t) {
-		double muLeft;
-		double wLeft;
-		double wRight;
-		for (HistVector::iterator it = hist.begin(); it != t; ++it) {
-			wLeft += *it;
-			muLeft += *it * (it - hist.begin());
-		}
-		wLeft /= sum;
-		wRight = 1 - wLeft;
-
-		//FIXME
-		if (wLeft < 0.0000005)
-			continue;
-
-		muLeft /= sum * wLeft;
-
-		double muRight = (mu - muLeft * wLeft) / wRight;
-		double disp = wLeft * wRight * (muLeft - muRight) * (muLeft - muRight);
-
-		if (disp > maxDisp) {
-			maxDisp = disp;
-			maxIdx = t - hist.begin();
-		}
-	}
-
-	//std::cout << "Otsu threshold: " << maxIdx << std::endl;
-
-	for (int i = 0; i < img.height(); ++i) {
-		uchar* scan = img.scanLine(i);
-		int depth = 4;
-		for (int j = 0; j < img.width(); ++j) {
-			QRgb* rgbpixel = reinterpret_cast<QRgb*>(scan + j * depth);
-			int gray = qGray(*rgbpixel);
-			int val = gray > maxIdx ? 255 : 0;
-			*rgbpixel = QColor(val, val, val).rgba();
-		}
-	}
-
-    return img;
+	//std::cout << "Total: " << total << "; match: " << match << std::endl;
+	return total == 0 ? false : (match * 1.0 / total > 0.45);
 }
