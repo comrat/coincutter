@@ -16,12 +16,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     circlerecognizer.cpp \
     convolution.cpp \
-    filters.cpp
+    filters.cpp \
+    morphology.cpp
 
 HEADERS  += mainwindow.h \
     circlerecognizer.h \
     Circle.h \
     convolution.h \
-    filters.h
+    filters.h \
+    morphology.h
 
 FORMS    += mainwindow.ui
