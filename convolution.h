@@ -4,7 +4,6 @@
 #include <QImage>
 #include <vector>
 
-
 class Convolution
 {
 public:
@@ -25,7 +24,7 @@ public:
 			_kernel[i].resize(_size, 0);
 	}
 
-    Convolution(const Array& arr, int divisor = 1) : _size(arr.size()), _shift(_size / 2), _divisor(divisor), _kernel(arr) { }
+	Convolution(const Array& arr, int divisor = 1) : _size(arr.size()), _shift(_size / 2), _divisor(divisor), _kernel(arr) { }
 
 	QImage Calc(const QImage& image);
 	QImage CalcGray(const QImage& image);
@@ -33,6 +32,10 @@ public:
 	void SetKernel(const Array& arr) { _size = arr.size(); _shift = _size / 2; _kernel = arr; }
 	void SetDivisor(int divisor) { _divisor = divisor; }
 	int GetDivisor() const { return _divisor; }
+
+	bool CheckPattern(const QImage& image) const;
+	QImage ApplyPattern(const QImage& image) const;
 };
+
 
 #endif // CONVOLUTION_H

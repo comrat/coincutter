@@ -2,12 +2,12 @@
 #define MORPHOLOGY_H
 
 #include <QImage>
+#include "convolution.h"
 
 
-class Morphology
+namespace morphology
 {
-public:
-	static QImage Dilation(const QImage& image);
+	QImage Dilation(const QImage& image);
 };
 
 #endif // MORPHOLOGY_H

@@ -4,8 +4,10 @@
 
 #include <numeric>
 
+namespace filters
+{
 
-QImage Filters::Sobel(const QImage& image)
+QImage Sobel(const QImage& image)
 {
 	Convolution::Array kernel(3, Convolution::ArrayRow(3));
 	kernel[0][0] = -1;
@@ -53,7 +55,7 @@ QImage Filters::Sobel(const QImage& image)
 }
 
 
-QImage Filters::CannyThreshold(const QImage& image, int low, int high)
+QImage CannyThreshold(const QImage& image, int low, int high)
 {
 	if (low > 255)
 		low = 255;
@@ -119,7 +121,7 @@ QImage Filters::CannyThreshold(const QImage& image, int low, int high)
 }
 
 
-QImage Filters::CannyNonMax(const QImage& image, const Convolution::Array& angles)
+QImage CannyNonMax(const QImage& image, const Convolution::Array& angles)
 {
 	int w = image.width();
 	int h = image.height();
@@ -155,7 +157,7 @@ QImage Filters::CannyNonMax(const QImage& image, const Convolution::Array& angle
 }
 
 
-QImage Filters::Canny(const QImage& image)
+QImage Canny(const QImage& image)
 {
 	int w = image.width();
 	int h = image.height();
@@ -210,7 +212,7 @@ QImage Filters::Canny(const QImage& image)
 }
 
 
-QImage Filters::Gauss(const QImage& image)
+QImage Gauss(const QImage& image)
 {
 	Convolution::Array kernel(5, Convolution::ArrayRow(5));
 	kernel[0][0] = 2;
@@ -249,7 +251,7 @@ QImage Filters::Gauss(const QImage& image)
 }
 
 
-QImage Filters::Grayscale(const QImage& image)
+QImage Grayscale(const QImage& image)
 {
 	QImage img = image;
 
@@ -267,7 +269,7 @@ QImage Filters::Grayscale(const QImage& image)
 }
 
 
-QImage Filters::BinarizeOtsu(const QImage& image)
+QImage BinarizeOtsu(const QImage& image)
 {
 	QImage img = image;
 	unsigned long sum = img.height() * img.width();
@@ -330,4 +332,6 @@ QImage Filters::BinarizeOtsu(const QImage& image)
 	}
 
     return img;
+}
+
 }

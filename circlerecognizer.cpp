@@ -9,15 +9,15 @@
 Circles CircleRecognizer::FindCircles(const QImage& image)
 {
 	Circles res;
-	QImage filtered = Filters::Canny(image);
+	QImage filtered = filters::Canny(image);
 	int w = filtered.width();
 	int h = filtered.height();
-	int minR = (int)((w > h ? w : h) * 0.1);
+	int minR = (int)((w > h ? w : h) * 0.025);
 	int maxR = (int)((w > h ? w : h) * 0.5);
 	for (int r = minR; r < maxR; ++r) {
 		int width = w - r - 1;
 		int height = h - r - 1;
-		std::cout << "R: " << r << "; min: " << minR << ", maxR: " << maxR << std::endl;
+		//std::cout << "R: " << r << "; min: " << minR << ", maxR: " << maxR << std::endl;
 		for (int x = r; x < width; ++x) {
 			for (int y = r; y < height; ++y) {
 				Circle c(x, y, r);
@@ -32,12 +32,7 @@ Circles CircleRecognizer::FindCircles(const QImage& image)
 
 
 bool CircleRecognizer::CheckPixel(const QImage& image, int x, int y)
-{
-	if (x < 0 || y < 0 || x >= image.width() || y >= image.height())
-		return false;
-	else
-		return qGray(image.pixel(x, y)) == 255;
-}
+{ return (x < 0 || y < 0 || x >= image.width() || y >= image.height()) ? true : (qGray(image.pixel(x, y)) == 255); }
 
 
 bool CircleRecognizer::CheckCircle(const QImage& image, const Circle& circle)
@@ -72,5 +67,5 @@ bool CircleRecognizer::CheckCircle(const QImage& image, const Circle& circle)
 	}
 
 	//std::cout << "Total: " << total << "; match: " << match << std::endl;
-	return total == 0 ? false : (match * 1.0 / total > 0.45);
+	return total == 0 ? false : (match * 1.0 / total > 0.7);
 }

@@ -10,18 +10,21 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
+	QPixmap image("./1.jpg");
+	image = image.scaled(ui->label->width(), ui->label->height(), Qt::KeepAspectRatio);
 
-    QPixmap image("./1.jpg");
-    image = image.scaled(ui->label->width(), ui->label->height(), Qt::KeepAspectRatio);
+	using namespace filters;
 
 	CircleRecognizer recognizer;
-	QImage img = image.toImage();
-
-	Circles circles = recognizer.FindCircles(image.toImage());
+	QImage original = image.toImage();
+	QImage img = original;
+	img = Canny(img);
+	Circles circles = recognizer.FindCircles(img);
 	for (Circles::iterator it = circles.begin(); it != circles.end(); ++it)
-		DrawCircle(img, *it);
-	ui->label->setPixmap(QPixmap::fromImage(img));
+		DrawCircle(original, *it);
+
+	ui->label->setPixmap(QPixmap::fromImage(original));
 }
 
 

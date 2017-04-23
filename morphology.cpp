@@ -1,8 +1,10 @@
 #include "morphology.h"
 
-QImage Morphology::Dilation(const QImage& image)
+namespace morphology
 {
 
+QImage Dilation(const QImage& image)
+{
 	QImage img(image.width(), image.height(), QImage::Format_RGB32);
 
 	for (int i = 0; i < image.height(); ++i) {
@@ -25,4 +27,6 @@ QImage Morphology::Dilation(const QImage& image)
 	}
 
 	return img;
+}
+
 }
