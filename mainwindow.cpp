@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 
 #include "circlerecognizer.h"
-#include "filters.h"
 
 #include <QPixmap>
 
@@ -14,13 +13,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	QPixmap image("./1.jpg");
 	image = image.scaled(ui->label->width(), ui->label->height(), Qt::KeepAspectRatio);
 
-	using namespace filters;
-
-	CircleRecognizer recognizer;
 	QImage original = image.toImage();
 	QImage img = original;
-	img = Canny(img);
-	Circles circles = recognizer.FindCircles(img);
+	CircleRecognizer recognizer(img);
+	Circles circles = recognizer.FindCircles();
 	for (Circles::iterator it = circles.begin(); it != circles.end(); ++it)
 		DrawCircle(original, *it);
 
@@ -49,8 +45,6 @@ void MainWindow::DrawCircle(QImage& image, const Circle& circle)
 	int x = circle.radius;
 	int y = 0;
 	int err = 0;
-	int total = 0;
-	int match = 0;
 
 	while (x >= y) {
 		PutPixel(image, x0 + x, y0 + y);

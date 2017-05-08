@@ -8,12 +8,15 @@
 
 class CircleRecognizer
 {
+	QImage _img;
+
 public:
-	Circles FindCircles(const QImage& image);
+	CircleRecognizer(const QImage& image);
+	Circles FindCircles();
 
 private:
-	bool CheckCircle(const QImage& image, const Circle& circle);
-	bool CheckPixel(const QImage& image, int x, int y);
+	bool CheckCircle(const Circle& circle);
+	bool CheckPixel(int x, int y);
 };
 
 #endif // CIRCLERECOGNIZER_H
