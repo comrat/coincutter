@@ -25,6 +25,30 @@ Circles CircleRecognizer::FindCircles()
 			}
 		}
 	}
+	res = RemoveExtraCircles(res);
+	return res;
+}
+
+
+bool CircleRecognizer::IsInternalCircle(const Circle& circle, const Circles& circles)
+{
+	for (Circles::const_iterator it = circles.begin(); it != circles.end(); ++it)
+	{
+		if (circle == *it)
+			continue;
+		if (it->Contains(circle))
+			return true;
+	}
+	return false;
+}
+
+
+Circles CircleRecognizer::RemoveExtraCircles(const Circles& circles)
+{
+	Circles res;
+	for (Circles::const_iterator it = circles.begin(); it != circles.end(); ++it)
+		if (!IsInternalCircle(*it, circles))
+			res.push_back(*it);
 	return res;
 }
 

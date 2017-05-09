@@ -15,6 +15,7 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     circlerecognizer.cpp \
+    Circle.cpp \
     convolution.cpp \
     filters.cpp \
     morphology.cpp
