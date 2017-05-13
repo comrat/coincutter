@@ -11,8 +11,10 @@ struct Circle {
 	explicit Circle(int x = 0, int y = 0, int radius = 0) : x(x), y(y), radius(radius) { }
 
 	bool Contains(const Circle& other) const;
+	int CenterDistance(const Circle& other) const;
 
 	friend bool operator== (const Circle& lhs, const Circle& rhs);
+	friend bool operator!= (const Circle& lhs, const Circle& rhs);
 };
 
 

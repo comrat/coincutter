@@ -5,6 +5,7 @@
 #include <QColor>
 
 #include <iostream>
+#include <cmath>
 
 
 Circles CircleRecognizer::FindCircles()
@@ -30,15 +31,30 @@ Circles CircleRecognizer::FindCircles()
 }
 
 
-bool CircleRecognizer::IsInternalCircle(const Circle& circle, const Circles& circles)
+bool CircleRecognizer::IsSimilar(const Circle& circle, const Circles& circles)
 {
+	int w = _img.width();
+	int h = _img.height();
+	int delta = (int)((w > h ? w : h) * 0.025);
 	for (Circles::const_iterator it = circles.begin(); it != circles.end(); ++it)
 	{
 		if (circle == *it)
 			continue;
-		if (it->Contains(circle))
+		int deltaRadius = circle.radius - it->radius;
+		int radiusDist = sqrt(deltaRadius * deltaRadius);
+		int centerDist = circle.CenterDistance(*it);
+		if (radiusDist < delta && centerDist < delta)
 			return true;
 	}
+	return false;
+}
+
+
+bool CircleRecognizer::IsInternalCircle(const Circle& circle, const Circles& circles)
+{
+	for (Circles::const_iterator it = circles.begin(); it != circles.end(); ++it)
+		if (circle != *it && it->Contains(circle))
+			return true;
 	return false;
 }
 
@@ -47,7 +63,7 @@ Circles CircleRecognizer::RemoveExtraCircles(const Circles& circles)
 {
 	Circles res;
 	for (Circles::const_iterator it = circles.begin(); it != circles.end(); ++it)
-		if (!IsInternalCircle(*it, circles))
+		if (!IsInternalCircle(*it, circles) && !IsSimilar(*it, res))
 			res.push_back(*it);
 	return res;
 }
