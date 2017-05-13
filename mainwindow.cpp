@@ -9,18 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-	ui->setupUi(this);
-	QPixmap image("./1.jpg");
-	image = image.scaled(ui->label->width(), ui->label->height(), Qt::KeepAspectRatio);
-
-	QImage original = image.toImage();
-	QImage img = original;
-	CircleRecognizer recognizer(img);
-	Circles circles = recognizer.FindCircles();
-	for (Circles::iterator it = circles.begin(); it != circles.end(); ++it)
-		DrawCircle(original, *it);
-
-	ui->label->setPixmap(QPixmap::fromImage(original));
+    ui->setupUi(this);
 }
 
 
@@ -65,4 +54,19 @@ void MainWindow::DrawCircle(QImage& image, const Circle& circle)
 			err -= 2 * x + 1;
 		}
 	}
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    QPixmap image("./1.jpg");
+    image = image.scaled(ui->label->width(), ui->label->height(), Qt::KeepAspectRatio);
+
+    QImage original = image.toImage();
+    QImage img = original;
+    CircleRecognizer recognizer(img);
+    Circles circles = recognizer.FindCircles();
+    for (Circles::iterator it = circles.begin(); it != circles.end(); ++it)
+        DrawCircle(original, *it);
+
+    ui->label->setPixmap(QPixmap::fromImage(original));
 }
