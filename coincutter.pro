@@ -18,13 +18,15 @@ SOURCES += main.cpp\
     Circle.cpp \
     convolution.cpp \
     filters.cpp \
-    morphology.cpp
+    morphology.cpp \
+    SimpleImage.cpp
 
 HEADERS  += mainwindow.h \
     circlerecognizer.h \
     Circle.h \
     convolution.h \
     filters.h \
-    morphology.h
+    morphology.h \
+    SimpleImage.h
 
 FORMS    += mainwindow.ui
