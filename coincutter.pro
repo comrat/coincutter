@@ -19,7 +19,7 @@ SOURCES += main.cpp\
     convolution.cpp \
     filters.cpp \
     morphology.cpp \
-    SimpleImage.cpp
+    GrayImage.cpp
 
 HEADERS  += mainwindow.h \
     circlerecognizer.h \
@@ -27,6 +27,6 @@ HEADERS  += mainwindow.h \
     convolution.h \
     filters.h \
     morphology.h \
-    SimpleImage.h
+    GrayImage.h
 
 FORMS    += mainwindow.ui
