@@ -62,7 +62,6 @@ void MainWindow::on_actionOpen_triggered()
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), ".", tr("Image Files (*.png *.jpg *.bmp)"));
     QPixmap image(fileName);
     image = image.scaled(ui->label->width(), ui->label->height(), Qt::KeepAspectRatio);
-
     QImage original = image.toImage();
     QImage img = original;
     CircleRecognizer recognizer(img);

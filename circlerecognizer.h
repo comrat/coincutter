@@ -4,15 +4,17 @@
 #include <QImage>
 #include <vector>
 #include "Circle.h"
+#include "GrayImage.h"
 
 
 class CircleRecognizer
 {
-	QImage _img;
+	GrayImage* _img;
 
 public:
 	CircleRecognizer(const QImage& image);
 	Circles FindCircles();
+	~CircleRecognizer() { delete _img; }
 
 private:
 	bool CheckCircle(const Circle& circle);

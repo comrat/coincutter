@@ -9,8 +9,10 @@ private:
 
 public:
 	GrayImage(const QImage& img);
-
 	~GrayImage();
+
+	int GetWidth() const { return _width; }
+	int GetHeight() const { return _height; }
 
 	uchar GetPixel(int x, int y) const
 	{ return _data[y * _width + x]; }

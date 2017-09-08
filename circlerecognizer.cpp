@@ -11,8 +11,8 @@
 Circles CircleRecognizer::FindCircles()
 {
 	Circles res;
-	int w = _img.width();
-	int h = _img.height();
+	int w = _img->GetWidth();
+	int h = _img->GetHeight();
 	int minR = (int)((w > h ? w : h) * 0.025);
 	int maxR = (int)((w > h ? w : h) * 0.5);
 	for (int r = minR; r < maxR; ++r) {
@@ -20,6 +20,7 @@ Circles CircleRecognizer::FindCircles()
 		int height = h - r - 1;
 		for (int x = r; x < width; ++x) {
 			for (int y = r; y < height; ++y) {
+				//std::cout << "R: " << r << std::endl;
 				Circle c(x, y, r);
 				if (CircleRecognizer::CheckCircle(c))
 					res.push_back(c);
@@ -33,8 +34,8 @@ Circles CircleRecognizer::FindCircles()
 
 bool CircleRecognizer::IsSimilar(const Circle& circle, const Circles& circles)
 {
-	int w = _img.width();
-	int h = _img.height();
+	int w = _img->GetWidth();
+	int h = _img->GetHeight();
 	int delta = (int)((w > h ? w : h) * 0.025);
 	for (Circles::const_iterator it = circles.begin(); it != circles.end(); ++it)
 	{
@@ -69,15 +70,17 @@ Circles CircleRecognizer::RemoveExtraCircles(const Circles& circles)
 }
 
 
-CircleRecognizer::CircleRecognizer(const QImage& image) : _img(image)
+CircleRecognizer::CircleRecognizer(const QImage& image)
 {
-	_img = filters::Canny(_img);
-	_img = morphology::Dilation(_img);
+	//_img = new GrayImage(image);
+	QImage preproc = filters::Canny(image);
+	preproc = morphology::Dilation(preproc);
+	_img = new GrayImage(image);
 }
 
 
 bool CircleRecognizer::CheckPixel(int x, int y)
-{ return (x < 0 || y < 0 || x >= _img.width() || y >= _img.height()) ? true : (qGray(_img.pixel(x, y)) == 255); }
+{ return (x < 0 || y < 0 || x >= _img->GetWidth() || y >= _img->GetHeight()) ? true : (qGray(_img->GetPixel(x, y)) == 255); }
 
 
 bool CircleRecognizer::CheckCircle(const Circle& circle)
@@ -111,5 +114,5 @@ bool CircleRecognizer::CheckCircle(const Circle& circle)
 		}
 	}
 
-	return total == 0 ? false : (match * 1.0 / total > 0.7);
+	return total == 0 ? false : (match * 1.0 / total > 0.5);
 }
